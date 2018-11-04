@@ -18,7 +18,6 @@ type Rcebot struct {
 
 type Configuration struct {
 	Token string
-	BotID string
 }
 
 type Message struct {
@@ -33,7 +32,7 @@ func (r *Rcebot) HandleMessage(ev *slack.MessageEvent) {
 	}
 	if spl[0] == "$" {
 		var msg Message
-		cmd := exec.Command("sh", "-c", spl[1])
+		cmd := exec.Command("sh", "-c", strings.Join(spl[1:], " "))
 		var outGood bytes.Buffer
 		var outBad bytes.Buffer
 		cmd.Stdout = &outGood
@@ -87,6 +86,7 @@ func main() {
 	bot := Rcebot{
 		SlackAPI: slack.New(conf.Token),
 	}
+	bot.SlackAPI.SetDebug(true)
 	bot.Start()
 
 }
